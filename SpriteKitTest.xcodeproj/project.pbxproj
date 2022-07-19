@@ -11,6 +11,7 @@
 		E134F2682886E81E0081F9CF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E134F2672886E81E0081F9CF /* ContentView.swift */; };
 		E134F26A2886E81F0081F9CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E134F2692886E81F0081F9CF /* Assets.xcassets */; };
 		E134F26E2886E81F0081F9CF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E134F26D2886E81F0081F9CF /* Preview Assets.xcassets */; };
+		E1FE38B32886E94400FAC443 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1FE38B22886E94400FAC443 /* GameScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,7 @@
 		E134F2692886E81F0081F9CF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E134F26B2886E81F0081F9CF /* SpriteKitTest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpriteKitTest.entitlements; sourceTree = "<group>"; };
 		E134F26D2886E81F0081F9CF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E1FE38B22886E94400FAC443 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 			children = (
 				E134F2652886E81E0081F9CF /* SpriteKitTestApp.swift */,
 				E134F2672886E81E0081F9CF /* ContentView.swift */,
+				E1FE38B22886E94400FAC443 /* GameScene.swift */,
 				E134F2692886E81F0081F9CF /* Assets.xcassets */,
 				E134F26B2886E81F0081F9CF /* SpriteKitTest.entitlements */,
 				E134F26C2886E81F0081F9CF /* Preview Content */,
@@ -139,6 +142,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1FE38B32886E94400FAC443 /* GameScene.swift in Sources */,
 				E134F2682886E81E0081F9CF /* ContentView.swift in Sources */,
 				E134F2662886E81E0081F9CF /* SpriteKitTestApp.swift in Sources */,
 			);
