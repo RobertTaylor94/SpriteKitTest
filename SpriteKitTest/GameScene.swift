@@ -58,7 +58,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             isGameStarted.toggle()
             startButton.removeFromParent()
             playerScore = 0
-            spawnScoreLabel(position: CGPoint(x: frame.midX, y: frame.maxY - 50))
+            spawnScoreLabel(position: CGPoint(x: displaySize.midX, y: displaySize.maxY - 100))
         }
         
         if isGameOver == true {
@@ -84,7 +84,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playerScore += 1
             print(playerScore)
             scoreLabel.removeFromParent()
-            spawnScoreLabel(position: CGPoint(x: frame.midX, y: frame.maxY - 50))
+            spawnScoreLabel(position: CGPoint(x: displaySize.midX, y: displaySize.maxY - 100))
         }
     }
     
@@ -102,13 +102,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func spawnGround() {
         ground.color = .green
-        ground.size = CGSize(width: displaySize.width, height: 10)
+        ground.size = CGSize(width: displaySize.width*2, height: 10)
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
         ground.physicsBody?.affectedByGravity = false
         ground.physicsBody?.categoryBitMask = 1
         ground.physicsBody?.contactTestBitMask = 1
-        ground.position = CGPoint(x: -1, y: 10)
+        ground.position = CGPoint(x: -1, y: -20)
         addChild(ground)
     }
     
@@ -162,7 +162,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverText.position = CGPoint(x: frame.midX, y: frame.midY)
         addChild(gameOverText)
         
-        spawnScoreLabel(position: CGPoint(x: frame.midX, y: frame.midY - 50))
+        spawnScoreLabel(position: CGPoint(x: displaySize.midX, y: displaySize.maxY - 300))
         
         obstacle.removeFromParent()
         obstacleTwo.removeFromParent()
@@ -179,8 +179,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startButton = SKLabelNode(fontNamed: "Chalkduster")
         startButton.text = "Start"
         startButton.fontColor = .yellow
-        startButton.fontSize = 30
-        startButton.position = CGPoint(x: frame.midX, y: frame.maxY)
+        startButton.fontSize = 50
+        startButton.position = CGPoint(x: displaySize.midX, y: displaySize.maxY/2)
         self.addChild(startButton)
     }
     
@@ -194,9 +194,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         isGameOver = false
         isGameStarted = false
         
-        print("reset")
-        print("game over =\(isGameOver)")
-        print("is game started= \(isGameStarted)")
+//        print("reset")
+//        print("game over =\(isGameOver)")
+//        print("is game started= \(isGameStarted)")
             
         //}
         //let sequence = SKAction.sequence([timer, spawn])
