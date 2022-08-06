@@ -235,19 +235,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //
 //    }
 //
-    
-    func addPoint() {
-        let timer = SKAction.wait(forDuration: 4)
-        
-        let addPoint = SKAction.run {
-            self.playerScore += 1
-            self.scoreLabel.removeFromParent()
-            self.spawnScoreLabel(position: CGPoint(x: self.frame.midX, y: self.frame.maxY - 100))
-        }
-        
-        let sequence = SKAction.sequence([timer, addPoint])
-        self.run(sequence)
-    }
+
     
     //Add 1 point for each obstacle passed
     func spawnScoreLabel(position: CGPoint) {
