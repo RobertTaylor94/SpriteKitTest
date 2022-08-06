@@ -11,10 +11,11 @@ import SpriteKit
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //Variables
-    var player = SKSpriteNode()
+    var player = SKShapeNode()
     var ground = SKSpriteNode()
     var obstacle = SKSpriteNode()
     var obstacleTwo = SKSpriteNode()
+    var obstacleContainer = SKSpriteNode()
     var gameOverText = SKLabelNode()
     var startButton = SKLabelNode()
     var isGameStarted = false
@@ -37,23 +38,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         physicsWorld.contactDelegate = self
         
-        print("setup")
-        print("is game over = \(isGameOver)")
-        print("is game started = \(isGameStarted)")
-        
-        beginButton()
-        //spawnBackground()
-        spawnPlayer()
         spawnGround()
-        spawnLeftPoint()
-        
+        beginButton()
+        spawnPlayer()
+//        spawnLeftPoint()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         if isGameStarted == false && isGameOver == false {
-            spawnObstacle()
-            spawnLeftPoint()
+            spawnObstacles()
+//            spawnLeftPoint()
             player.physicsBody?.affectedByGravity = true
             isGameStarted.toggle()
             startButton.removeFromParent()
@@ -67,32 +62,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel.removeFromParent()
         }
         if isGameOver == false && isGameStarted == true {
-            player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 100))
+            player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 11))
         }
-        
-        
-        print("is game started = \(isGameStarted)")
-        
     }
+    
+    //MARK: Collisions
     
     func didBegin(_ contact: SKPhysicsContact) {
         if contact.bodyA.node?.name == "player" || contact.bodyB.node?.name == "player" {
             gameOver()
         }
         
-        if contact.bodyA.node?.name == "leftPoint" || contact.bodyB.node?.name == "leftPoint" {
-            playerScore += 1
-            print(playerScore)
-            scoreLabel.removeFromParent()
-            spawnScoreLabel(position: CGPoint(x: displaySize.midX, y: displaySize.maxY - 100))
-        }
+//        if contact.bodyA.node?.name == "leftPoint" || contact.bodyB.node?.name == "leftPoint" {
+//            print("POINT :)")
+//            playerScore += 1
+//            scoreLabel.removeFromParent()
+//            spawnScoreLabel(position: CGPoint(x: displaySize.midX, y: displaySize.maxY - 100))
+//            leftPoint.removeFromParent()
+//            spawnLeftPoint()
+//        }
     }
     
+    //MARK: Spawn Player
+    
     func spawnPlayer() {
-        let playerTexture = SKTexture(imageNamed: "player")
-        player = SKSpriteNode(texture: playerTexture, size: CGSize(width: 75, height: 75))
-        player.position = CGPoint(x: 200, y: 200)
-        player.physicsBody = SKPhysicsBody(texture: playerTexture, size: player.size)
+//        let playerTexture = SKTexture(imageNamed: "player")
+        player = SKShapeNode(circleOfRadius: 15)
+        player.position = CGPoint(x: displaySize.midX, y: (displaySize.maxY/2)-50)
+        player.zPosition = 5
+        player.fillColor = .red
+        player.physicsBody = SKPhysicsBody(circleOfRadius: 12)
         player.physicsBody?.affectedByGravity = false
         player.physicsBody?.collisionBitMask = 1
         player.physicsBody?.contactTestBitMask = 1
@@ -102,54 +101,62 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func spawnGround() {
         ground.color = .green
-        ground.size = CGSize(width: displaySize.width*2, height: 10)
+        ground.size = CGSize(width: frame.width, height: frame.height/5)
+        ground.position = CGPoint(x: frame.midX, y: 0)
+        ground.zPosition = 10
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
         ground.physicsBody?.affectedByGravity = false
         ground.physicsBody?.categoryBitMask = 1
         ground.physicsBody?.contactTestBitMask = 1
-        ground.position = CGPoint(x: -1, y: -20)
         addChild(ground)
     }
     
-    func spawnObstacle() {
+    //MARK: Spawn Obstacles
+    
+    func spawnObstacles() {
         
         let timer = SKAction.wait(forDuration: 2)
         
+        let spawnContainer = SKAction.run { [self] in
+            obstacleContainer = SKSpriteNode(color: .clear, size: CGSize(width: 100, height: frame.height))
+            obstacleContainer.anchorPoint = CGPoint(x: 0.5, y: 0)
+            obstacleContainer.position = CGPoint(x: frame.width + 100, y: 0)
+            self.addChild(obstacleContainer)
+            
+            let moveContainer = SKAction.move(to: CGPoint(x: -50, y: 0), duration: 5)
+            obstacleContainer.run(moveContainer)
+        }
+        
         let spawnObstacles = SKAction.run { [self] in
-            obstacle = SKSpriteNode(color: .gray, size: CGSize(width: 10, height: obstacleHeight()))
-            obstacle.position = CGPoint(x: 600, y: 0)
+            
+            let height = UInt32(frame.height / 6)
+            let y = Double(arc4random_uniform(height) + height)
+            
+            obstacle = SKSpriteNode(color: .red, size: CGSize(width: 20, height: frame.height/1.5))
             obstacle.physicsBody = SKPhysicsBody(rectangleOf: obstacle.size)
             obstacle.physicsBody?.affectedByGravity = false
             obstacle.physicsBody?.isDynamic = false
+            obstacle.position = CGPoint(x: 0.0, y: y)
             
-            obstacleTwo = SKSpriteNode(color: .gray, size: CGSize(width: 10, height: 200))
-            let obstacleHeight = obstacle.size.height
-            obstacleTwo.position = CGPoint(x: 600, y: (obstacleHeight + 50))
+            obstacleTwo = SKSpriteNode(color: .red, size: CGSize(width: 20, height: frame.height/1.5))
             obstacleTwo.physicsBody = SKPhysicsBody(rectangleOf: obstacleTwo.size)
             obstacleTwo.physicsBody?.affectedByGravity = false
             obstacleTwo.physicsBody?.isDynamic = false
+            obstacleTwo.position = CGPoint(x: 0.0, y: y + Double(obstacleTwo.size.height) + 150)
             
-            addChild(obstacle)
-            addChild(obstacleTwo)
-            
-            let moveObstacle = SKAction.move(to: CGPoint(x: -50, y: 10), duration: 5)
-            let moveObstacleTwo = SKAction.move(to: CGPoint(x: -50, y: obstacleHeight + 50), duration: 5)
-            
-            obstacle.run(moveObstacle)
-            obstacleTwo.run(moveObstacleTwo)
+            obstacleContainer.addChild(obstacle)
+            obstacleContainer.addChild(obstacleTwo)
         }
         
-        let sequence = SKAction.sequence([spawnObstacles, timer])
+        let sequence = SKAction.sequence([spawnContainer, spawnObstacles, timer])
         self.run(SKAction.repeatForever(sequence), withKey: obstacleKey)
-        
-        
     }
     
-    func obstacleHeight() -> CGFloat {
-        let height = Int.random(in: 100...Int(frame.height))
-        return CGFloat(height)
-    }
+//    func obstacleHeight() -> CGFloat {
+//        let height = Int.random(in: Int((frame.height)/3)...Int((frame.height)/1.2))
+//        return CGFloat(height)
+//    }
     
     func gameOver() {
         scene?.removeAllChildren()
@@ -162,7 +169,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverText.position = CGPoint(x: frame.midX, y: frame.midY)
         addChild(gameOverText)
         
-        spawnScoreLabel(position: CGPoint(x: displaySize.midX, y: displaySize.maxY - 300))
+//        spawnScoreLabel(position: CGPoint(x: displaySize.midX, y: displaySize.maxY - 300))
         
         obstacle.removeFromParent()
         obstacleTwo.removeFromParent()
@@ -172,6 +179,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("game over")
         print("game over =\(isGameOver)")
         print("is game started= \(isGameStarted)")
+        print("Frame height: \(frame.height)")
         spawnGround()
     }
     
@@ -185,22 +193,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func resetGame() {
-        //let timer = SKAction.wait(forDuration: 1)
-        //let spawn = SKAction.run{ [self] in
-        
+
         spawnPlayer()
         beginButton()
         gameOverText.removeFromParent()
         isGameOver = false
         isGameStarted = false
-        
-//        print("reset")
-//        print("game over =\(isGameOver)")
-//        print("is game started= \(isGameStarted)")
-            
-        //}
-        //let sequence = SKAction.sequence([timer, spawn])
-        //self.run(sequence)
         
     }
     
@@ -212,21 +210,49 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(background)
     }
     
-    func spawnLeftPoint() {
+    //MARK: Scoring
+    
+    //To detect obstacle collision
+    //BROKEN
+//    func spawnLeftPoint() {
+//
+//        let timer = SKAction.wait(forDuration: 2)
+//
+//        let spawnPoint = SKAction.run{ [self] in
+//            leftPoint = SKSpriteNode(color: .yellow, size: CGSize(width: 5, height: 20))
+//            leftPoint.position = CGPoint(x: frame.midX-50, y: frame.minY+200)
+//            leftPoint.name = "leftPoint"
+//            leftPoint.physicsBody = SKPhysicsBody(rectangleOf: leftPoint.size)
+//            leftPoint.physicsBody?.categoryBitMask = 1
+//            leftPoint.physicsBody?.contactTestBitMask = 1
+//            leftPoint.physicsBody?.affectedByGravity = false
+//    //        leftPoint.physicsBody?.isDynamic = false
+//            addChild(leftPoint)
+//        }
+//
+//        let sequence = SKAction.sequence([timer, spawnPoint])
+//        self.run(sequence)
+//
+//    }
+//
+    
+    func addPoint() {
+        let timer = SKAction.wait(forDuration: 4)
         
-        leftPoint = SKSpriteNode(color: .clear, size: CGSize(width: 5, height: 20))
-        leftPoint.position = CGPoint(x: 100, y: frame.minY+50)
-        leftPoint.name = "leftPoint"
-        leftPoint.physicsBody = SKPhysicsBody(rectangleOf: leftPoint.size)
-        leftPoint.physicsBody?.categoryBitMask = 1
-        leftPoint.physicsBody?.contactTestBitMask = 1
-        leftPoint.physicsBody?.affectedByGravity = false
-        addChild(leftPoint)
+        let addPoint = SKAction.run {
+            self.playerScore += 1
+            self.scoreLabel.removeFromParent()
+            self.spawnScoreLabel(position: CGPoint(x: self.frame.midX, y: self.frame.maxY - 100))
+        }
         
+        let sequence = SKAction.sequence([timer, addPoint])
+        self.run(sequence)
     }
     
+    //Add 1 point for each obstacle passed
     func spawnScoreLabel(position: CGPoint) {
         scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
+        scoreLabel.zPosition = 15
         scoreLabel.text = "\(playerScore)"
         scoreLabel.fontColor = .yellow
         scoreLabel.fontSize = 50
